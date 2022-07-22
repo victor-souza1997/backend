@@ -3,7 +3,6 @@ from flask_pymongo import PyMongo
 import os
 import json
 from flask import Response
-from flask import jsonify
 from bson.json_util import ObjectId
 
 app = Flask(__name__)
@@ -32,8 +31,6 @@ def get_devices():
     # try:
     devices_list = mongo.db.devices.find()
     devices_list = [device for device in devices_list]
-    print(devices_list)
-    # print(json.dumps(devices_list))
     if devices_list:
         return Response(json.dumps(devices_list, default=str), mimetype="application/json")
 

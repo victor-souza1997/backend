@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_pymongo import PyMongo
 import os
 import json
@@ -11,9 +11,13 @@ app.config["MONGO_URI"] = os.environ['MONGO_URI']
 mongo = PyMongo(app)
 
 
-@app.route('/input_data/<device_id>/<value>')
-def save_data_device(device_id, value):
+@app.route('/input_data', methods=['POST'])
+def save_data_device():
     try:
+        input_json = request.get_json(force=True) 
+        print(input_json)
+        device_id = input_json['device_id']
+        value = input_json['value']
         devices = [device for device in mongo.db.devices.find(
             {'device_id': device_id})]
         if devices:
@@ -47,7 +51,7 @@ def set_device(device_id):
             return "already up"
         mongo.db.devices.insert_one(
             {'device_id': device_id})
-    except:
+    except: 
         return 'not saved'
     return "saved with sucess"
 
